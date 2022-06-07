@@ -1,17 +1,21 @@
-import { useState } from "react";
+import { FC, useReducer, useState } from "react";
 import { INITIAL_STATE } from "../initialState";
+import { UseStateComponent } from "./UseState";
 
-export const UseStateComponent = <T,>({
+const UseReducer = <T,>({
   state,
-  setState,
+  dispatch,
+  path,
 }: {
   state: T;
-  setState: React.Dispatch<T>;
+  dispatch: React.Dispatch<Record<string, any>>;
+  path: string;
 }) => {
   const [key, setKey] = useState("");
   const [type, setType] = useState<"object" | "string">("string");
   const [stringValue, setStringValue] = useState("");
   const [objectValue, setObjectValue] = useState({});
+
   return (
     <table border={1}>
       <tbody>
@@ -23,17 +27,18 @@ export const UseStateComponent = <T,>({
               <td>
                 {typeof v == "string" ? (
                   v
-                ) : (
-                  <UseStateComponent
+                ) : typeof v == "object" ? (
+                  <UseReducer
                     state={v}
-                    setState={(v) => setState({ ...state, [k]: v })}
+                    dispatch={dispatch}
+                    path={`${path}{${k}`}
                   />
-                )}
+                ) : null}
               </td>
               <td>
                 <button
                   onClick={() => {
-                    setState({ ...state, [k]: undefined });
+                    dispatch({ [`${path}{${k}`]: undefined });
                   }}
                 >
                   DELETE
@@ -68,16 +73,15 @@ export const UseStateComponent = <T,>({
               )}
               {type == "object" && (
                 <UseStateComponent
-                  state={objectValue}
+                  state={objectValue as any}
                   setState={setObjectValue}
                 />
               )}
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  setState({
-                    ...state,
-                    [key]:
+                  dispatch({
+                    [`${path}{${key}`]:
                       type == "string"
                         ? stringValue
                         : type == "object"
@@ -100,8 +104,16 @@ export const UseStateComponent = <T,>({
   );
 };
 
-export default () => {
-  const [state, setState] = useState(INITIAL_STATE);
+const reducer = (state: any, action: Record<string, any>) => {
+  Object.entries(action).forEach(([k, v]) => {
+    const [pop, ...path] = k.split("{").filter(Boolean).reverse();
+    path.reverse().reduce((acc, k) => acc[k], state)[pop] = v;
+  });
 
-  return <UseStateComponent state={state} setState={setState} />;
+  return { ...state };
+};
+
+export default () => {
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  return <UseReducer state={state} dispatch={dispatch} path="" />;
 };

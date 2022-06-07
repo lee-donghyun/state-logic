@@ -1,3 +1,4 @@
+import UseReducer from "./components/UseReducer";
 import UseState from "./components/UseState";
 
 const App = () => {
@@ -14,7 +15,9 @@ const App = () => {
         </thead>
         <tbody>
           <tr>
-            <td>useReducer</td>
+            <td>
+              <UseReducer />
+            </td>
             <td>
               <p>redux</p>
             </td>
