@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import UseState from "./components/UseState";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <table style={{ width: "100%", marginTop: 20 }} border={1}>
+        <thead>
+          <tr>
+            <th>useReducer</th>
+            <th>redux</th>
+            <th>useState</th>
+            <th>recoil</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>useReducer</td>
+            <td>
+              <p>redux</p>
+            </td>
+            <td>
+              <UseState />
+            </td>
+            <td>
+              <p>recoil</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
-}
+};
 
 export default App;
